@@ -6,8 +6,10 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.9.0"
+    kotlin("kapt") version "1.9.0"
     jacoco
     `java-test-fixtures`
+    idea
 }
 
 group = "com.widehouse"
@@ -23,11 +25,16 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("com.querydsl:querydsl-jpa:5.0.0")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
+
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("io.r2dbc:r2dbc-h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
@@ -52,4 +59,12 @@ tasks.withType<Test> {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     finalizedBy(tasks.jacocoTestCoverageVerification)
+}
+
+idea {
+    module {
+        val kaptMain = file("build/generated/source/kapt/main")
+        sourceDirs.add(kaptMain)
+        generatedSourceDirs.add(kaptMain)
+    }
 }
