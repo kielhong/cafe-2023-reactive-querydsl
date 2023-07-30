@@ -7,7 +7,6 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
-import java.time.LocalDateTime
 
 @DataJpaTest
 @Import(QueryDslConfig::class)
@@ -19,7 +18,7 @@ class CategoryRepositoryTest(
 
     init {
         "findAllByName" {
-            val category = entityManager.persist(Category(0, "category", LocalDateTime.now()))
+            val category = entityManager.persist(Category(0, "category"))
 
             val result = repository.findByName("category")
             result shouldBe category
