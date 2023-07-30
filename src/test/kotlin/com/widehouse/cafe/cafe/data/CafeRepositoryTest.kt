@@ -4,6 +4,7 @@ import com.widehouse.cafe.config.QueryDslConfig
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
@@ -29,14 +30,12 @@ class CafeRepositoryTest(
                 entityManager.persist(Cafe(0, "url$it", "name$it", "desc$it", category))
             }
 
-            val result = repository.findAllByCategoryId(category.id)
-            result.size shouldBe 2
-            result.forAll { it.category shouldBe category }
+            val predicate = QCafe.cafe.category.id.eq(category.id)
+            val result = repository.findAll(predicate)
 
-            result.forEach {
-                println(it.createdAt)
-                println(it.updatedAt)
-            }
+            // then
+            result shouldHaveSize 2
+            result.toList().forAll { it.category shouldBe category }
         }
     }
 }
