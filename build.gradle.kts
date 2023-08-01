@@ -5,10 +5,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.2"
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     id("com.ewerk.gradle.plugins.querydsl") version "1.0.10"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.9.0"
-    id("org.jetbrains.kotlin.plugin.noarg") version "1.9.0"
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.9.0"
+    kotlin("plugin.jpa") version "1.9.0"
     kotlin("kapt") version "1.9.0"
     jacoco
 //    `java-test-fixtures`
@@ -27,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -38,7 +37,6 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
     testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
     testImplementation("io.kotest:kotest-assertions-core:5.5.5")
     testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
@@ -60,6 +58,14 @@ tasks.withType<Test> {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     finalizedBy(tasks.jacocoTestCoverageVerification)
+
+    classDirectories.setFrom(
+        classDirectories.files.map {
+            fileTree(it).matching {
+                exclude("**/CafeApplication*.*", "**/Q*.*")
+            }
+        }
+    )
 }
 
 idea {

@@ -1,8 +1,9 @@
-package com.widehouse.cafe.cafe.repository
+package com.widehouse.cafe.article.repository
 
+import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.model.QArticle.article
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.model.Category
-import com.widehouse.cafe.cafe.model.QCafe
 import com.widehouse.cafe.common.annotation.QueryDslTest
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.spring.SpringExtension
@@ -12,30 +13,29 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 
 @QueryDslTest
-class CafeRepositoryTest(
+class ArticleRepositoryTest(
     private val entityManager: TestEntityManager,
-    private val repository: CafeRepository
+    private val repository: ArticleRepository
 ) : StringSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     init {
-        lateinit var category: Category
+        lateinit var cafe: Cafe
 
         beforeEach {
-            category = entityManager.persist(Category(0, "category"))
+            val category = entityManager.persist(Category(0, "category"))
+            cafe = entityManager.persist(Cafe(0, "cafe", "name", "desc", category))
+
+            (1..2).forEach {
+                entityManager.persist(Article(0, cafe.id, "subject$it", "content$it"))
+            }
         }
 
-        "findAllByCategoryId" {
-            (1..2).forEach {
-                entityManager.persist(Cafe(0, "url$it", "name$it", "desc$it", category))
-            }
+        "findAllByCafe" {
+            val result = repository.findAll(article.cafeId.eq(cafe.id))
 
-            val predicate = QCafe.cafe.category.id.eq(category.id)
-            val result = repository.findAll(predicate)
-
-            // then
             result shouldHaveSize 2
-            result.toList().forAll { it.category shouldBe category }
+            result.toList().forAll { it.cafeId shouldBe cafe.id }
         }
     }
 }
