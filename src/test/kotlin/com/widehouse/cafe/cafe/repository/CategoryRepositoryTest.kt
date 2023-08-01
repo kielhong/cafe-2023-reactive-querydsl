@@ -1,5 +1,6 @@
-package com.widehouse.cafe.cafe.data
+package com.widehouse.cafe.cafe.repository
 
+import com.widehouse.cafe.cafe.model.Category
 import com.widehouse.cafe.config.QueryDslConfig
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.spring.SpringExtension

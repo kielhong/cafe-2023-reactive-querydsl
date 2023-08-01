@@ -1,6 +1,8 @@
-package com.widehouse.cafe.cafe.data
+package com.widehouse.cafe.cafe.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.widehouse.cafe.cafe.model.Category
+import com.widehouse.cafe.cafe.model.QCategory
 import org.springframework.stereotype.Repository
 
 @Repository
