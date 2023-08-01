@@ -6,7 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 
 @MappedSuperclass
-open class TimestampEntity {
+abstract class TimestampEntity {
     @CreationTimestamp
     lateinit var createdAt: LocalDateTime
 
